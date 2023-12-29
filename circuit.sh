@@ -2,6 +2,8 @@
 PSQL="psql -U postgres -d circuit --tuples-only -c"
 echo -e "\n ~~~~2024 Cirtcuit Party Registration~~~~ \n"
 
+# clear tables & restart primary key sequence to 1
+# echo $($PSQL "truncate tickets,rsvp,attendees;alter sequence tickets_ticket_id_seq restart with 1;alter sequence rsvp_rsvp_id_seq restart with 1;alter sequence attendees_attendee_id_seq restart with 1;")
 
 
 
