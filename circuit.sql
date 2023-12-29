@@ -66,7 +66,8 @@ CREATE TABLE public.rsvp (
     attendee_id integer NOT NULL,
     invoice numeric(5,2),
     customer_payment numeric(5,2),
-    customer_change numeric(5,2)
+    customer_change numeric(5,2),
+    parking boolean DEFAULT false
 );
 
 
@@ -100,7 +101,11 @@ ALTER SEQUENCE public.rsvp_rsvp_id_seq OWNED BY public.rsvp.rsvp_id;
 
 CREATE TABLE public.tickets (
     ticket_id integer NOT NULL,
-    type character varying(20) NOT NULL
+    type character varying(20) NOT NULL,
+    price numeric(5,2),
+    description character varying(30),
+    count integer DEFAULT 100,
+    available boolean DEFAULT true
 );
 
 
@@ -153,6 +158,9 @@ ALTER TABLE ONLY public.tickets ALTER COLUMN ticket_id SET DEFAULT nextval('publ
 -- Data for Name: attendees; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.attendees VALUES (1, 'Fabio', 21, '5555555555');
+INSERT INTO public.attendees VALUES (2, 'Brian', 34, '8833388888');
+INSERT INTO public.attendees VALUES (3, 'Mason', 25, '8838833383');
 
 
 --
@@ -165,15 +173,15 @@ ALTER TABLE ONLY public.tickets ALTER COLUMN ticket_id SET DEFAULT nextval('publ
 -- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.tickets VALUES (1, 'VIP');
-INSERT INTO public.tickets VALUES (2, 'GA');
+INSERT INTO public.tickets VALUES (1, 'VIP', 125.00, 'Very Important Person', 100, true);
+INSERT INTO public.tickets VALUES (2, 'GA', 81.25, 'General Admission', 100, true);
 
 
 --
 -- Name: attendees_attendee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 1, false);
+SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 3, true);
 
 
 --
