@@ -28,11 +28,10 @@ RSVP_INFO(){
     if [[ "$(echo "$CUSTOMER_PAYMENT < $PRICE" | bc)" = 1 ]]
         then
         # echo not enough
-        echo -e "\nInsifficient Amount."
+        echo -e "\nInsufficient Amount."
         #delete customer
         DROP_CUSTOMER=$($PSQL "delete from attendees where attendee_id = '$ATTENDEE_ID'")
-
-        MENU "$(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//') has been dropped from attendees table."
+        echo -e "\n$(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//') has been dropped from attendees table."
     else
         # if payment is over
         if [[ "$(echo "$CUSTOMER_PAYMENT > $PRICE" | bc)" = 1 ]]

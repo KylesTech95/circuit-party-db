@@ -157,39 +157,47 @@ ALTER TABLE ONLY public.tickets ALTER COLUMN ticket_id SET DEFAULT nextval('publ
 -- Data for Name: attendees; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.attendees VALUES (1, 'Kyle', 23, '1234321234');
-INSERT INTO public.attendees VALUES (2, 'Craig', 50, '0010002229');
+INSERT INTO public.attendees VALUES (2, 'Kyle', 22, '1231231234');
+INSERT INTO public.attendees VALUES (3, 'Fabio', 24, '5555555555');
+INSERT INTO public.attendees VALUES (4, 'Byron', 32, '9595995999');
+INSERT INTO public.attendees VALUES (5, 'Jamie', 33, '541123123');
+INSERT INTO public.attendees VALUES (6, 'Dennis', 34, '1234233300');
+INSERT INTO public.attendees VALUES (7, 'Nick', 43, '1234299999');
 
 
 --
 -- Data for Name: rsvp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.rsvp VALUES (1, 1, 1, 126.00, 1.00, false);
-INSERT INTO public.rsvp VALUES (2, 1, 2, 130.00, 5.00, false);
+INSERT INTO public.rsvp VALUES (1, 1, 2, 140.50, 15.50, false);
+INSERT INTO public.rsvp VALUES (2, 3, 3, 400.00, 102.10, false);
+INSERT INTO public.rsvp VALUES (3, 1, 4, 154.00, 29.00, false);
+INSERT INTO public.rsvp VALUES (4, 1, 5, 140.00, 15.00, false);
+INSERT INTO public.rsvp VALUES (5, 1, 6, 300.00, 175.00, false);
+INSERT INTO public.rsvp VALUES (6, 2, 7, 100.00, 17.25, false);
 
 
 --
 -- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.tickets VALUES (2, 'GA', 82.75, 'General Admission', 300, true);
-INSERT INTO public.tickets VALUES (3, 'WP', 297.90, 'Weekend Pass', 300, true);
-INSERT INTO public.tickets VALUES (1, 'VIP', 125.00, 'Very Important Person', 300, true);
+INSERT INTO public.tickets VALUES (3, 'WP', 297.90, 'Weekend Pass', 299, true);
+INSERT INTO public.tickets VALUES (1, 'VIP', 125.00, 'Very Important Person', 296, true);
+INSERT INTO public.tickets VALUES (2, 'GA', 82.75, 'General Admission', 299, true);
 
 
 --
 -- Name: attendees_attendee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 2, true);
+SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 7, true);
 
 
 --
 -- Name: rsvp_rsvp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.rsvp_rsvp_id_seq', 2, true);
+SELECT pg_catalog.setval('public.rsvp_rsvp_id_seq', 6, true);
 
 
 --
