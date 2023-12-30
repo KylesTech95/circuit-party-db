@@ -78,6 +78,7 @@ ATTENDEE_INFO(){
                     read ATTENDEE_NAME
                     # insert customer information
                     sleep 1
+                    ATTENDEE_PHONE=$(echo "$ATTENDEE_PHONE" | sed -E 's/[\.|-]//g')
                     INSERT_ATTENDEE=$($PSQL "insert into attendees(name,age,phone) values('$ATTENDEE_NAME',$ATTENDEE_AGE,'$ATTENDEE_PHONE')")
                     RSVP_INFO "\n$ATTENDEE_NAME, your rsvp is setup for$TICKET_TYPE.\nSee you there!"
                 fi
@@ -132,6 +133,7 @@ ATTENDEE_INFO(){
                         read ATTENDEE_NAME
                         # insert customer information
                         sleep 1
+                        ATTENDEE_PHONE=$(echo "$ATTENDEE_PHONE" | sed -E 's/[\.|-]//g')
                         INSERT_ATTENDEE=$($PSQL "insert into attendees(name,age,phone) values('$ATTENDEE_NAME',$ATTENDEE_AGE,'$ATTENDEE_PHONE')")
                         RSVP_INFO "\n$ATTENDEE_NAME, your rsvp is setup for$TICKET_TYPE.\nSee you there!"
                     fi
