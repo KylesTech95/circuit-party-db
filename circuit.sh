@@ -3,7 +3,7 @@ PSQL="psql -U postgres -d circuit --tuples-only -c"
 echo -e "\n ~~~~2024 Cirtcuit Party Registration~~~~ \n"
 
 # clear tables & restart primary key sequence to 1
-# echo $($PSQL "truncate rsvp,attendees;alter sequence rsvp_rsvp_id_seq restart with 1;alter sequence attendees_attendee_id_seq restart with 1;")
+# echo $($PSQL "truncate rsvp,attendees;alter sequence rsvp_rsvp_id_seq restart with 1;update tickets set count=300 where ticket_id < 4")
 
 
 RSVP_INFO(){
@@ -12,11 +12,12 @@ RSVP_INFO(){
     if [[ $1 ]]
         then echo -e "\n$1"
     fi
+    CURRENT_TICKET_COUNT=$($PSQL "select count from tickets where ticket_id=$TICKET_SELECTED")
+    COUNTER=1
     ATTENDEE_ID=$($PSQL "select attendee_id from attendees where phone='$ATTENDEE_PHONE'")
     NAME_RETRIEVED=$($PSQL "select name from attendees where phone='$ATTENDEE_PHONE'")
 
-
-    echo $NAME_RETRIEVED
+    sleep .5
     # obtain customer price from the ticket ID they selected.
     PRICE=$($PSQL "select price from tickets where ticket_id=$TICKET_SELECTED")
     echo -e "\nYou must pay me $PRICE."
@@ -30,6 +31,7 @@ RSVP_INFO(){
         echo -e "\nInsifficient Amount."
         #delete customer
         DROP_CUSTOMER=$($PSQL "delete from attendees where attendee_id = '$ATTENDEE_ID'")
+
         MENU "$(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//') has been dropped from attendees table."
     else
         # if payment is over
@@ -41,13 +43,13 @@ RSVP_INFO(){
             sleep .5
             #insert RSVP
             INSERT_RSVP=$($PSQL "insert into rsvp(ticket_id,attendee_id,customer_payment,customer_change) values($TICKET_SELECTED,$ATTENDEE_ID,'$CUSTOMER_PAYMENT','$CHANGE_BACK')")
+            DEC_TICKET_COUNT=$($PSQL "update tickets set count=$(echo `expr $CURRENT_TICKET_COUNT - $COUNTER`) where ticket_id=$TICKET_SELECTED")
             echo -e "\nRSVP inserted for $(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//')."
         fi
     fi
 }
 
-
-CUSTOMER_INFO(){
+ATTENDEE_INFO(){
     TICKET_SELECTED=$1
     TICKET_TYPE=$($PSQL "select type from tickets where ticket_id=$TICKET_SELECTED")
 
@@ -227,13 +229,13 @@ PURCHASE_MENU(){
                 then
                 MENU "\n#$TICKET_SELECTED is not a valid option.\nWelcome to menu"
                 else
-                    # continue with customer_information
-                    CUSTOMER_INFO $TICKET_SELECTED $ATTENDEE_PHONE
+                    # continue with ATTENDEE_INFOrmation
+                    ATTENDEE_INFO $TICKET_SELECTED $ATTENDEE_PHONE
             fi
 
             else
-                # continue with customer_information
-                CUSTOMER_INFO $TICKET_SELECTED $ATTENDEE_PHONE
+                # continue with ATTENDEE_INFOrmation
+                ATTENDEE_INFO $TICKET_SELECTED $ATTENDEE_PHONE
         fi
         
 
