@@ -6,6 +6,45 @@ echo -e "\n ~~~~2024 Cirtcuit Party Registration~~~~ \n"
 # echo $($PSQL "truncate rsvp,attendees;alter sequence rsvp_rsvp_id_seq restart with 1;update tickets set count=300 where ticket_id < 4")
 
 
+BASIC_PARKING(){
+    PRICE=$1
+    BASIC_PRICE=$2
+    PARKING_BOOL=true
+
+    echo -e "\nYou chose Basic Parking."
+    sleep .5
+    P_PRICE=$(echo $BASIC_PRICE+$PRICE | bc )
+    
+}
+PREMIUM_PARKING(){
+    PRICE=$1
+    PREMIUM_PRICE=$2
+    PARKING_BOOL=true
+    echo -e "\nYou chose Premium Parking."
+    sleep .5
+    P_PRICE=$(echo $PREMIUM_PRICE+$PRICE | bc)
+}
+EXIT_PARKING(){
+    PRICE=$1
+    PARKING_BOOL=false
+    echo -e "\nThank you for visiting the parking center.\nNo parking assistance needed at this time."
+    sleep .5
+    P_PRICE=$(echo $PRICE)
+}
+PARKING(){
+    PRICE=$1
+    BASIC_PRICE=55
+    PREMIUM_PRICE=85
+    echo -e "\n~~~~ Parking Center ~~~~\n"
+    sleep .5
+    echo -e "\n1. Basic Parking\n2. Premium Parking\n3. Exit"
+    read MENU_SELECTION
+    case $MENU_SELECTION in 
+    1) BASIC_PARKING $PRICE $BASIC_PRICE ;;
+    2) PREMIUM_PARKING $PRICE $PREMIUM_PRICE ;;
+    3) EXIT_PARKING $PRICE ;;
+    esac  
+}
 RSVP_INFO(){
     # rsvp information
     echo -e "\n~~~~ RSVP information center ~~~~"
@@ -20,6 +59,9 @@ RSVP_INFO(){
     sleep .5
     # obtain customer price from the ticket ID they selected.
     PRICE=$($PSQL "select price from tickets where ticket_id=$TICKET_SELECTED")
+    # ask for parking
+    PARKING $PRICE
+    PRICE=$(echo $P_PRICE)
     echo -e "\nYou must pay me $PRICE."
     CURRENT_CHARGE=$($PSQL "select price from tickets where ticket_id = $TICKET_SELECTED")
     # read payment
@@ -33,6 +75,7 @@ RSVP_INFO(){
         DROP_CUSTOMER=$($PSQL "delete from attendees where attendee_id = '$ATTENDEE_ID'")
         echo -e "\n$(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//') has been dropped from attendees table."
     else
+
         # if payment is over
         if [[ "$(echo "$CUSTOMER_PAYMENT > $PRICE" | bc)" = 1 ]]
             CHANGE_BACK=$(echo $CUSTOMER_PAYMENT-$PRICE | bc)
@@ -41,13 +84,12 @@ RSVP_INFO(){
             echo -e "\n$(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//'), you overpayed, so your change back is: \$$CHANGE_BACK."
             sleep .5
             #insert RSVP
-            INSERT_RSVP=$($PSQL "insert into rsvp(ticket_id,attendee_id,customer_payment,customer_change) values($TICKET_SELECTED,$ATTENDEE_ID,'$CUSTOMER_PAYMENT','$CHANGE_BACK')")
+            INSERT_RSVP=$($PSQL "insert into rsvp(ticket_id,attendee_id,customer_payment,customer_change,parking) values($TICKET_SELECTED,$ATTENDEE_ID,'$CUSTOMER_PAYMENT','$CHANGE_BACK',$PARKING_BOOL)")
             DEC_TICKET_COUNT=$($PSQL "update tickets set count=$(echo `expr $CURRENT_TICKET_COUNT - $COUNTER`) where ticket_id=$TICKET_SELECTED")
             echo -e "\nRSVP inserted for $(echo "$NAME_RETRIEVED" | sed -E 's/^\s+|\s+$//')."
         fi
     fi
 }
-
 ATTENDEE_INFO(){
     TICKET_SELECTED=$1
     TICKET_TYPE=$($PSQL "select type from tickets where ticket_id=$TICKET_SELECTED")
@@ -80,7 +122,7 @@ ATTENDEE_INFO(){
                     sleep 1
                     ATTENDEE_PHONE=$(echo "$ATTENDEE_PHONE" | sed -E 's/[\.|-]//g')
                     INSERT_ATTENDEE=$($PSQL "insert into attendees(name,age,phone) values('$ATTENDEE_NAME',$ATTENDEE_AGE,'$ATTENDEE_PHONE')")
-                    RSVP_INFO "\n$ATTENDEE_NAME, your rsvp is setup for$TICKET_TYPE.\nSee you there!"
+                    RSVP_INFO "\n$ATTENDEE_NAME, you selected $TICKET_TYPE.\nGreat pick!"
                 fi
         else
                     # if phone number is matched with customer by ID
