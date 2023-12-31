@@ -30,6 +30,7 @@ EXIT_PARKING(){
     echo -e "\nThank you for visiting the parking center.\nNo parking assistance needed at this time."
     sleep .5
     P_PRICE=$(echo $PRICE)
+    sleep .5
 }
 PARKING(){
     PRICE=$1
@@ -37,7 +38,7 @@ PARKING(){
     PREMIUM_PRICE=85
     echo -e "\n~~~~ Parking Center ~~~~\n"
     sleep .5
-    echo -e "\n1. Basic Parking\n2. Premium Parking\n3. Exit"
+    echo -e "\n1. Basic Parking - \$$BASIC_PRICE.00\n2. Premium Parking- \$$PREMIUM_PRICE.00\n3. Exit"
     read MENU_SELECTION
     case $MENU_SELECTION in 
     1) BASIC_PARKING $PRICE $BASIC_PRICE ;;
@@ -45,22 +46,25 @@ PARKING(){
     3) EXIT_PARKING $PRICE ;;
     esac  
 }
+
+
 RSVP_INFO(){
     # rsvp information
     echo -e "\n~~~~ RSVP information center ~~~~"
     if [[ $1 ]]
         then echo -e "\n$1"
+        sleep 1
     fi
     CURRENT_TICKET_COUNT=$($PSQL "select count from tickets where ticket_id=$TICKET_SELECTED")
     COUNTER=1
     ATTENDEE_ID=$($PSQL "select attendee_id from attendees where phone='$ATTENDEE_PHONE'")
     NAME_RETRIEVED=$($PSQL "select name from attendees where phone='$ATTENDEE_PHONE'")
-
     sleep .5
     # obtain customer price from the ticket ID they selected.
     PRICE=$($PSQL "select price from tickets where ticket_id=$TICKET_SELECTED")
     # ask for parking
     PARKING $PRICE
+    sleep .5
     PRICE=$(echo $P_PRICE)
     echo -e "\nYou must pay me $PRICE."
     CURRENT_CHARGE=$($PSQL "select price from tickets where ticket_id = $TICKET_SELECTED")
@@ -122,7 +126,7 @@ ATTENDEE_INFO(){
                     sleep 1
                     ATTENDEE_PHONE=$(echo "$ATTENDEE_PHONE" | sed -E 's/[\.|-]//g')
                     INSERT_ATTENDEE=$($PSQL "insert into attendees(name,age,phone) values('$ATTENDEE_NAME',$ATTENDEE_AGE,'$ATTENDEE_PHONE')")
-                    RSVP_INFO "\n$ATTENDEE_NAME, you selected $TICKET_TYPE.\nGreat pick!"
+                    RSVP_INFO "\n$ATTENDEE_NAME, you selected$TICKET_TYPE.\nGreat pick!"
                 fi
         else
                     # if phone number is matched with customer by ID
@@ -247,7 +251,6 @@ MENU(){
         fi
     fi  
 }
-# purchase menu
 PURCHASE_MENU(){
     # purchase variables
     AVAILABLE_TICKETS=$($PSQL "select ticket_id,type,price,description from tickets where available=true order by ticket_id asc")
@@ -300,6 +303,8 @@ PURCHASE_MENU(){
     fi  
 
 }
+
+
 DONATE_MENU(){
     echo -e "\nWelcome to donate" 
 }
