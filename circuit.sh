@@ -135,13 +135,14 @@ ATTENDEE_INFO(){
                     # menu option for returnee
                     echo -e "\nWhat do you want to do?"
                     sleep .5
-                    echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit"
+                    echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit\n4. Total Sales"
                     read MENU_SELECTION
 
                     case $MENU_SELECTION in 
                     1) PURCHASE_MENU ;;
                     2) DONATE_MENU ;;
                     3) EXIT ;;
+                    4) TOTAL_SALES ;;
                     esac
         fi
     else
@@ -190,13 +191,14 @@ ATTENDEE_INFO(){
                         # menu option for returnee
                         echo -e "\nWhat do you want to do?"
                         sleep .5
-                        echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit"
+                        echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit\n4. Total Sales"
                         read MENU_SELECTION
 
                         case $MENU_SELECTION in 
                         1) PURCHASE_MENU ;;
                         2) DONATE_MENU ;;
                         3) EXIT ;;
+                        4) TOTAL_SALES ;;
                         esac
             fi
         fi  
@@ -231,22 +233,24 @@ MENU(){
             # menu option for returnee
             echo -e "\nWhat do you want to do?"
             sleep .5
-            echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit"
+            echo -e "\n1. Purchase Tickets for friends/family\n2. Donate\n3. Exit\n4. Total Sales"
             read MENU_SELECTION
 
             case $MENU_SELECTION in 
             1) PURCHASE_MENU ;;
             2) DONATE_MENU $ATTENDEE_PHONE $NAME_RETRIEVED;;
             3) EXIT ;;
+            4) TOTAL_SALES ;;
             esac
         else
-            echo -e "\n1. Purchase Tickets\n2. Donate\n3. Exit"
+            echo -e "\n1. Purchase Tickets\n2. Donate\n3. Exit\n4. Total Sales"
             read MENU_SELECTION
 
             case $MENU_SELECTION in 
             1) PURCHASE_MENU $ATTENDEE_PHONE ;;
             2) DONATE_MENU $ATTENDEE_PHONE ;;
             3) EXIT ;;
+            4) TOTAL_SALES ;;
             esac  
         fi
     fi  
@@ -343,6 +347,32 @@ DONATE_MENU(){
 EXIT(){
     echo -e "\nThank you for visiting"
   sleep 1 
+}
+TOTAL_SALES(){
+    echo -e "\n~~~~ Check out our total sales! ~~~~\n"
+    sleep .5
+    # total sales from rsvp price
+    echo -e "\ntotal sales"
+    sleep .5
+    OBTAIN_TOTAL_SALES=$($PSQL "select sum(customer_payment) from rsvp")
+    echo $OBTAIN_TOTAL_SALES
+    #total difference in change-back from rsvp customer_change
+    echo -e "\ntotal Difference"
+    sleep .5
+    OBTAIN_TOTAL_DIFF=$($PSQL "select sum(customer_change) from rsvp")
+    echo $OBTAIN_TOTAL_DIFF
+    #total sales in donations
+    echo -e "\ntotal donations"
+    sleep .5
+    OBTAIN_TOTAL_DONTATIONS=$($PSQL "select sum(donation) from donations")
+    echo $OBTAIN_TOTAL_DONTATIONS
+    #highest Donator
+    echo -e "\nhighest donator"
+    sleep .5
+    OBTAIN_MAX_DONATION=$($PSQL "select max(donation) from donations")
+    OBTAIN_DONATOR=$($PSQL "select name from donations where donation='$OBTAIN_MAX_DONATION'")
+    echo -e "\nDonator:$OBTAIN_DONATOR - \$$(echo $OBTAIN_MAX_DONATION | sed 's/^\s+|\s+$//')"
+    sleep .5
 }
 
 MENU
