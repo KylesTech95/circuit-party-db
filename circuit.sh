@@ -216,6 +216,7 @@ MENU(){
     echo -e "\nWhat is your phone number?"
     # read phone number
     read ATTENDEE_PHONE
+    ATTENDEE_PHONE=$(echo "$ATTENDEE_PHONE" | sed -E 's/[\.|-]//g')
     NAME_RETRIEVED=$($PSQL "select name from attendees where phone='$ATTENDEE_PHONE'")
     # phone number not valid
     if [[ ! $ATTENDEE_PHONE =~ ^(1)?([-|.])?[0-9]{3}([-|.])?[0-9]{3}([-|.])?[0-9]{4}$ ]]
