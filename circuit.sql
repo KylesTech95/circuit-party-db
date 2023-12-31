@@ -57,6 +57,42 @@ ALTER SEQUENCE public.attendees_attendee_id_seq OWNED BY public.attendees.attend
 
 
 --
+-- Name: donations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.donations (
+    donation_id integer NOT NULL,
+    name character varying(30) NOT NULL,
+    phone character varying(15),
+    donation numeric(5,2) DEFAULT 0.00
+);
+
+
+ALTER TABLE public.donations OWNER TO postgres;
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.donations_donation_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.donations_donation_id_seq OWNER TO postgres;
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.donations_donation_id_seq OWNED BY public.donations.donation_id;
+
+
+--
 -- Name: rsvp; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -140,6 +176,13 @@ ALTER TABLE ONLY public.attendees ALTER COLUMN attendee_id SET DEFAULT nextval('
 
 
 --
+-- Name: donations donation_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations ALTER COLUMN donation_id SET DEFAULT nextval('public.donations_donation_id_seq'::regclass);
+
+
+--
 -- Name: rsvp rsvp_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -157,40 +200,57 @@ ALTER TABLE ONLY public.tickets ALTER COLUMN ticket_id SET DEFAULT nextval('publ
 -- Data for Name: attendees; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.attendees VALUES (2, 'Kyle', 22, '1231231234');
-INSERT INTO public.attendees VALUES (3, 'Fabio', 24, '5555555555');
-INSERT INTO public.attendees VALUES (4, 'Byron', 32, '9595995999');
-INSERT INTO public.attendees VALUES (5, 'Jamie', 33, '541123123');
-INSERT INTO public.attendees VALUES (6, 'Dennis', 34, '1234233300');
-INSERT INTO public.attendees VALUES (7, 'Nick', 43, '1234299999');
+INSERT INTO public.attendees VALUES (31, 'Fabio', 34, '5555555555');
+INSERT INTO public.attendees VALUES (32, 'Mark', 43, '1234543333');
+INSERT INTO public.attendees VALUES (33, 'mark', 26, '7324969800');
+INSERT INTO public.attendees VALUES (35, 'Kenny', 23, '5847774444');
+INSERT INTO public.attendees VALUES (36, 'Ian', 34, '9998475555');
+INSERT INTO public.attendees VALUES (37, 'Joshua', 52, '8844757777');
+INSERT INTO public.attendees VALUES (38, 'Shaun', 45, '1234321232');
+INSERT INTO public.attendees VALUES (39, 'FabioFriend', 43, '15453338484');
+
+
+--
+-- Data for Name: donations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.donations VALUES (1, 'Fabio', '5555555555', 400.00);
+INSERT INTO public.donations VALUES (2, 'NonGuest', '9249994888', 522.00);
 
 
 --
 -- Data for Name: rsvp; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.rsvp VALUES (1, 1, 2, 140.50, 15.50, false);
-INSERT INTO public.rsvp VALUES (2, 3, 3, 400.00, 102.10, false);
-INSERT INTO public.rsvp VALUES (3, 1, 4, 154.00, 29.00, false);
-INSERT INTO public.rsvp VALUES (4, 1, 5, 140.00, 15.00, false);
-INSERT INTO public.rsvp VALUES (5, 1, 6, 300.00, 175.00, false);
-INSERT INTO public.rsvp VALUES (6, 2, 7, 100.00, 17.25, false);
+INSERT INTO public.rsvp VALUES (1, 2, 31, 180.00, 12.25, true);
+INSERT INTO public.rsvp VALUES (2, 2, 32, 90.00, 7.25, false);
+INSERT INTO public.rsvp VALUES (3, 1, 33, 180.00, 0.00, true);
+INSERT INTO public.rsvp VALUES (4, 1, 35, 220.00, 10.00, true);
+INSERT INTO public.rsvp VALUES (5, 2, 38, 102.00, 19.25, false);
+INSERT INTO public.rsvp VALUES (6, 2, 39, 180.00, 12.25, true);
 
 
 --
 -- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.tickets VALUES (3, 'WP', 297.90, 'Weekend Pass', 299, true);
-INSERT INTO public.tickets VALUES (1, 'VIP', 125.00, 'Very Important Person', 296, true);
-INSERT INTO public.tickets VALUES (2, 'GA', 82.75, 'General Admission', 299, true);
+INSERT INTO public.tickets VALUES (3, 'WP', 297.90, 'Weekend Pass', 300, true);
+INSERT INTO public.tickets VALUES (1, 'VIP', 125.00, 'Very Important Person', 298, true);
+INSERT INTO public.tickets VALUES (2, 'GA', 82.75, 'General Admission', 296, true);
 
 
 --
 -- Name: attendees_attendee_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 7, true);
+SELECT pg_catalog.setval('public.attendees_attendee_id_seq', 39, true);
+
+
+--
+-- Name: donations_donation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.donations_donation_id_seq', 2, true);
 
 
 --
@@ -221,6 +281,22 @@ ALTER TABLE ONLY public.attendees
 
 ALTER TABLE ONLY public.attendees
     ADD CONSTRAINT attendees_pkey PRIMARY KEY (attendee_id);
+
+
+--
+-- Name: donations donations_phone_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations
+    ADD CONSTRAINT donations_phone_key UNIQUE (phone);
+
+
+--
+-- Name: donations donations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.donations
+    ADD CONSTRAINT donations_pkey PRIMARY KEY (donation_id);
 
 
 --

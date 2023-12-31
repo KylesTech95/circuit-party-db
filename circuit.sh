@@ -236,7 +236,7 @@ MENU(){
 
             case $MENU_SELECTION in 
             1) PURCHASE_MENU ;;
-            2) DONATE_MENU ;;
+            2) DONATE_MENU $ATTENDEE_PHONE $NAME_RETRIEVED;;
             3) EXIT ;;
             esac
         else
@@ -245,7 +245,7 @@ MENU(){
 
             case $MENU_SELECTION in 
             1) PURCHASE_MENU $ATTENDEE_PHONE ;;
-            2) DONATE_MENU ;;
+            2) DONATE_MENU $ATTENDEE_PHONE ;;
             3) EXIT ;;
             esac  
         fi
@@ -306,7 +306,39 @@ PURCHASE_MENU(){
 
 
 DONATE_MENU(){
-    echo -e "\nWelcome to donate" 
+    ATTENDEE_PHONE=$1
+    DONATOR_NAME=$2
+    echo -e "\n~~~~ Welcome to donate ~~~~"
+    sleep .5
+    # if customer is coming back
+    if [[ $2 ]]
+        then
+        # how much you want to donate?
+        sleep .5
+        echo -e "\nHow much would you like to donate?"
+        read DONATION
+        # insert name & phone into donations table
+        sleep .5
+        INSERT_DONATION=$($PSQL "insert into donations(name,phone,donation) values('$DONATOR_NAME','$ATTENDEE_PHONE','$DONATION')")
+        echo $INSERT_DONATION
+
+    else
+        # get name
+        echo -e "\nWhat is you name?"
+        sleep .5
+        read DONATOR_NAME
+        # how much you want to donate?
+        sleep .5
+        echo -e "\nHow much would you like to donate?"
+        read DONATION
+        # how much wou
+        # insert name & phone into donations table
+        sleep .5
+        INSERT_DONATION=$($PSQL "insert into donations(name,phone,donation) values('$DONATOR_NAME','$ATTENDEE_PHONE','$DONATION')")
+        echo $INSERT_DONATION
+    fi
+    
+
 }
 EXIT(){
     echo -e "\nThank you for visiting"
