@@ -5,7 +5,7 @@ Circuit Party Database made with PSQL & bash scripting
 # How to enter party Menu
 Open terminal of your choosing
 Enter folder "circuit-party-db"
-type "./circuit.sh" & order some Lemons!
+type "./circuit.sh" & join the party!
 
 1. ![photo](https://github.com/KylesTech95/circuit-party-db/blob/main/media/Screenshot%202023-12-31%203.48.50%20PM.png?raw=true)
 1. ![photo](https://github.com/KylesTech95/circuit-party-db/blob/main/media/Screenshot%202023-12-31%203.48.50%20PM.png?raw=true)
